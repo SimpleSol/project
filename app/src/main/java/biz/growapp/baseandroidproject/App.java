@@ -8,7 +8,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import net.danlew.android.joda.JodaTimeAndroid;
 
 import biz.growapp.baseandroidproject.network.RequestManager;
-import biz.growapp.baseandroidproject.utils.Prefs;
+import biz.growapp.baseandroidproject.helpers.Prefs;
 
 public class App extends Application {
 

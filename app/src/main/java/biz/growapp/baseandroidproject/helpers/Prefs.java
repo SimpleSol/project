@@ -1,4 +1,4 @@
-package biz.growapp.baseandroidproject.utils;
+package biz.growapp.baseandroidproject.helpers;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
