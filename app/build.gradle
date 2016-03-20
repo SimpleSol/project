@@ -4,18 +4,51 @@ android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
 
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+
+    def BOOLEAN = "boolean"
+    def TRUE = "true"
+    def FALSE = "false"
+    def IS_DEV_SERVER = "IS_DEV_SERVER"
+
     defaultConfig {
         applicationId "biz.growapp.baseandroidproject"
         minSdkVersion 15
         // IF targetSdkVersion == 23, be sure to support Android 6.0 runtime-permissions and Doze-mode
         targetSdkVersion 22
         versionCode 1
-        versionName "1.0"
+        versionName "0.01"
     }
+
+    signingConfigs {
+        debug {
+            storeFile file("../buildsystem/debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
+    }
+
     buildTypes {
+        debug {
+            applicationIdSuffix '.debug'
+            versionNameSuffix '-DEBUG'
+            buildConfigField BOOLEAN, IS_DEV_SERVER, TRUE
+        }
         release {
-            minifyEnabled false
+            buildConfigField BOOLEAN, IS_DEV_SERVER, FALSE
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    //change default name for output build file
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def file = output.outputFile
+            output.outputFile = new File(file.parent, defaultConfig.versionName + "-" + file.name)
         }
     }
 }
@@ -23,5 +56,13 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.2.0'
+
+    //compile all libraries defined in buildsystem/dependencies.gradle file
+    def libraries = rootProject.ext.libraries
+
+    for (def group : libraries.values()) {
+        for (def lib : group.values()) {
+            compile lib
+        }
+    }
 }
