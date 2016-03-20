@@ -5,9 +5,10 @@ android {
     buildToolsVersion "23.0.2"
 
     defaultConfig {
-        applicationId "growapp.biz.baseandroidproject"
+        applicationId "biz.growapp.baseandroidproject"
         minSdkVersion 15
-        targetSdkVersion 23
+        // IF targetSdkVersion == 23, be sure to support Android 6.0 runtime-permissions and Doze-mode
+        targetSdkVersion 22
         versionCode 1
         versionName "1.0"
     }

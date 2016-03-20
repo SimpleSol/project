@@ -1,0 +1,39 @@
+ext {
+
+    versions = [
+            androidSupport: '23.1.1',
+            fresco        : '0.7.0',
+            butterknife   : '7.0.1',
+            retrofit      : '2.0.0-beta4',
+            okhttp        : '3.1.1',
+            jodatime      : '2.8.2',
+    ]
+
+    libraries = [
+            android: [
+                    design      : "com.android.support:design:${versions.androidSupport}",
+                    support     : "com.android.support:support-v4:${versions.androidSupport}",
+                    appcompat   : "com.android.support:appcompat-v7:${versions.androidSupport}",
+                    recyclerview: "com.android.support:recyclerview-v7:${versions.androidSupport}",
+                    cardview    : "com.android.support:cardview-v7:${versions.androidSupport}",
+            ],
+
+            fresco : [
+                    fresco       : "com.facebook.fresco:fresco:${versions.fresco}",
+                    imagepipeline: "com.facebook.fresco:imagepipeline-okhttp:${versions.fresco}",
+            ],
+
+            network: [
+                    retrofit     : "com.squareup.retrofit2:retrofit:${versions.retrofit}",
+                    converterGson: "com.squareup.retrofit2:converter-gson:${versions.retrofit}",
+                    okhttp       : "com.squareup.okhttp3:okhttp:${versions.okhttp}",
+                    okhttpLogging: "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}",
+                    urlconnection: "com.squareup.okhttp3:okhttp-urlconnection:${versions.okhttp}",
+            ],
+
+            helpers: [
+                    butterknife: "com.jakewharton:butterknife:${versions.butterknife}",
+                    jodatime   : "net.danlew:android.joda:${versions.jodatime}",
+            ]
+    ]
+}

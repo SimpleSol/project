@@ -1,4 +1,4 @@
-package growapp.biz.baseandroidproject;
+package biz.growapp.baseandroidproject;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
