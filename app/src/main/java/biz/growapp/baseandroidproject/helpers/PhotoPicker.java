@@ -11,9 +11,6 @@ import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
-import com.intervale.babylink.R;
-import com.intervale.babylink.utils.BitmapUtils;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -22,6 +19,9 @@ import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
+import biz.growapp.baseandroidproject.R;
+import biz.growapp.baseandroidproject.utils.BitmapUtils;
 
 public class PhotoPicker {
     private static final ThreadLocal<SimpleDateFormat> DATE_FORMATTER = new ThreadLocal<SimpleDateFormat>() {

@@ -1,6 +1,6 @@
 package biz.growapp.baseandroidproject.network;
 
-public interface NetoworkConst {
+public interface NetworkConst {
     String DEV_URL = "http://dev.xxxx.com";
     String PROD_URL = "https://prod.xxxx.com";
 
@@ -13,7 +13,6 @@ public interface NetoworkConst {
 
     // TODO: 20.03.2016 move this class to upper level
     interface ErrorCodes {
-        String TOKEN_EXPIRED = "invalid_token";
         String UNKNOWN_ERROR = "unknown_error";
     }
 }

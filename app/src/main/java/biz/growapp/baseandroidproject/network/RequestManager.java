@@ -29,8 +29,8 @@ public class RequestManager {
     public static void init(Context context) {
         final OkHttpClient.Builder builder = new OkHttpClient().newBuilder();
 
-        builder.connectTimeout(NetoworkConst.CONNECTION_TIMEOUT, TimeUnit.SECONDS)
-                .readTimeout(NetoworkConst.READ_TIMEOUT, TimeUnit.SECONDS)
+        builder.connectTimeout(NetworkConst.CONNECTION_TIMEOUT, TimeUnit.SECONDS)
+                .readTimeout(NetworkConst.READ_TIMEOUT, TimeUnit.SECONDS)
                 .cookieJar(new JavaNetCookieJar(
                                 new CookieManager(
                                         new PersistentCookieStore(context.getApplicationContext()),
@@ -58,7 +58,7 @@ public class RequestManager {
 
         //noinspection ConstantConditions
         retrofit = new Retrofit.Builder()
-                .baseUrl(BuildConfig.IS_DEV_SERVER ? NetoworkConst.DEV_URL : NetoworkConst.PROD_URL)
+                .baseUrl(BuildConfig.IS_DEV_SERVER ? NetworkConst.DEV_URL : NetworkConst.PROD_URL)
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -73,7 +73,7 @@ public class RequestManager {
         try {
             return errorConverter.convert(response.errorBody());
         } catch (IOException e) {
-            return new ServerError(NetoworkConst.ErrorCodes.UNKNOWN_ERROR, NetoworkConst.ErrorCodes.UNKNOWN_ERROR);
+            return new ServerError(NetworkConst.ErrorCodes.UNKNOWN_ERROR, NetworkConst.ErrorCodes.UNKNOWN_ERROR);
         }
     }
 }

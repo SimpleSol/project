@@ -3,9 +3,8 @@ package biz.growapp.baseandroidproject.network;
 
 import android.support.annotation.Nullable;
 
-import com.intervale.babylink.network.response.base.ServerError;
-import com.intervale.babylink.network.response.base.ServerResponse;
-
+import biz.growapp.baseandroidproject.network.response.base.ServerError;
+import biz.growapp.baseandroidproject.network.response.base.ServerResponse;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -19,21 +18,18 @@ public abstract class BaseCallback<T> implements Callback<ServerResponse<T>> {
         if (response.isSuccess() && body != null) {
             onSuccess(body.getData());
         } else {
-            final ServerError error = RequestManager.parseError(response);
-            if (!NetoworkConst.ErrorCodes.TOKEN_EXPIRED.equals(error.getCode())) {
-                onError(error);
-            }
+            onError(RequestManager.parseError(response));
         }
         afterResult();
     }
 
     @Override
     public void onFailure(Call<ServerResponse<T>> call, Throwable t) {
-        beforeResult();
         if (call.isCanceled()) {
             return;
         }
-        onError(new ServerError(NetoworkConst.ErrorCodes.UNKNOWN_ERROR, t.getMessage()));
+        beforeResult();
+        onError(new ServerError(NetworkConst.ErrorCodes.UNKNOWN_ERROR, t.getMessage()));
         afterResult();
     }
 
