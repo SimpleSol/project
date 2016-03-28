@@ -1,4 +1,4 @@
-package biz.growapp.baseandroidproject.ui.base;
+package biz.growapp.baseandroidproject.base;
 
 
 import android.content.Intent;
@@ -9,7 +9,7 @@ import android.support.annotation.Nullable;
 import java.io.File;
 
 import biz.growapp.baseandroidproject.helpers.PhotoPicker;
-import biz.growapp.baseandroidproject.ui.base.loading.BaseAppLoadingActivity;
+import biz.growapp.baseandroidproject.base.loading.BaseAppLoadingActivity;
 import biz.growapp.baseandroidproject.utils.BitmapUtils;
 import biz.growapp.baseandroidproject.utils.DisplayUtils;
 import biz.growapp.baseandroidproject.utils.UriUtils;

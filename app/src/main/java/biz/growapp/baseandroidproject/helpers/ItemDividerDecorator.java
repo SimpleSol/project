@@ -15,20 +15,20 @@ public class ItemDividerDecorator extends RecyclerView.ItemDecoration {
     private final int skipFirstCount;
     private int halfWidth;
 
-    public ItemDividerDecorator(@ColorInt int color, float widthPx) {
-        this(color, widthPx, new Rect());
+    public ItemDividerDecorator(@ColorInt int color, float width) {
+        this(color, width, new Rect());
     }
 
-    public ItemDividerDecorator(@ColorInt int color, float widthPx, @NonNull Rect marginPx) {
-        this(color, widthPx, marginPx, 0);
+    public ItemDividerDecorator(@ColorInt int color, float width, @NonNull Rect margin) {
+        this(color, width, margin, 0);
     }
 
-    public ItemDividerDecorator(@ColorInt int color, float widthPx, @NonNull Rect marginPx, int skipFirstCount) {
-        this.margin = marginPx;
+    public ItemDividerDecorator(@ColorInt int color, float width, @NonNull Rect margin, int skipFirstCount) {
+        this.margin = margin;
         this.dividerPaint = new Paint();
         this.dividerPaint.setColor(color);
         this.skipFirstCount = skipFirstCount;
-        final float strokeWidth = widthPx < 1 ? 1 : widthPx;
+        final float strokeWidth = width < 1 ? 1 : width;
         this.dividerPaint.setStrokeWidth(strokeWidth);
         final int offset = Math.round(strokeWidth) / 2;
         halfWidth = offset < 1 ? 1 : offset;

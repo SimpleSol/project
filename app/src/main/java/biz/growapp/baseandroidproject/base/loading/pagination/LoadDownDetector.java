@@ -1,4 +1,4 @@
-package biz.growapp.baseandroidproject.ui.base.loading.pagination;
+package biz.growapp.baseandroidproject.base.loading.pagination;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;

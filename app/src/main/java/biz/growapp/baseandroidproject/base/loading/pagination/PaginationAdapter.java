@@ -1,4 +1,4 @@
-package biz.growapp.baseandroidproject.ui.base.loading.pagination;
+package biz.growapp.baseandroidproject.base.loading.pagination;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -9,7 +9,8 @@ import android.view.ViewGroup;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-import biz.growapp.baseandroidproject.ui.base.BaseAdapter;
+import biz.growapp.baseandroidproject.base.BaseAdapter;
+
 
 public abstract class PaginationAdapter<ModelT, ViewHolderT extends RecyclerView.ViewHolder> extends BaseAdapter<ModelT, ViewHolderT> {
     public static final int TYPE_PROGRESS = -1;

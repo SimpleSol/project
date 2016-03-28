@@ -1,4 +1,4 @@
-package biz.growapp.baseandroidproject.ui.base.dialogs;
+package biz.growapp.baseandroidproject.base.dialogs;
 
 import android.content.Context;
 import android.os.Bundle;

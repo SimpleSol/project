@@ -1,4 +1,4 @@
-package biz.growapp.baseandroidproject.ui.base.loading;
+package biz.growapp.baseandroidproject.base.loading;
 
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;

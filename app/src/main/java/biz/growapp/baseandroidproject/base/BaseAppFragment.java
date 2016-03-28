@@ -1,4 +1,4 @@
-package biz.growapp.baseandroidproject.ui.base;
+package biz.growapp.baseandroidproject.base;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
