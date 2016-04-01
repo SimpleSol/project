@@ -1,12 +1,12 @@
 ext {
 
     versions = [
-            androidSupport: '23.1.1',
-            fresco        : '0.7.0',
+            androidSupport: '23.2.1',
+            fresco        : '0.9.0',
             butterknife   : '7.0.1',
-            retrofit      : '2.0.0-beta4',
-            okhttp        : '3.1.1',
-            jodatime      : '2.8.2',
+            retrofit      : '2.0.1',
+            okhttp        : '3.2.0',
+            jodatime      : '2.9.3',
     ]
 
     libraries = [

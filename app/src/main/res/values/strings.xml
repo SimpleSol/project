@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">BaseAndroidProject</string>
+
+    <string name="data.loading.error.message">При загрузке данных произошла ошибка.\nПроверьте Ваше подключение к сети.</string>
+    <string name="data.loading.retry">Повторить попытку</string>
+    <string name="data.request.error.message">При выполнении запроса произошла ошибка.\nПроверьте Ваше подключение к сети.</string>
 </resources>

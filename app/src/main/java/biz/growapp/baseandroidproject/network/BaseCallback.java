@@ -15,7 +15,7 @@ public abstract class BaseCallback<T> implements Callback<ServerResponse<T>> {
     public void onResponse(Call<ServerResponse<T>> call, Response<ServerResponse<T>> response) {
         beforeResult();
         final ServerResponse<T> body = response.body();
-        if (response.isSuccess() && body != null) {
+        if (response.isSuccessful() && body != null) {
             onSuccess(body.getData());
         } else {
             onError(RequestManager.parseError(response));

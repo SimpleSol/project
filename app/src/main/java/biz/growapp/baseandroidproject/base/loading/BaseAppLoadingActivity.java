@@ -6,8 +6,9 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.TextView;
 
-import biz.growapp.baseandroidproject.helpers.ViewStateSwitcher;
+import biz.growapp.baseandroidproject.R;
 import biz.growapp.baseandroidproject.base.BaseAppActivity;
+import biz.growapp.baseandroidproject.helpers.ViewStateSwitcher;
 
 
 public abstract class BaseAppLoadingActivity extends BaseAppActivity implements BaseLoadingView {
@@ -23,8 +24,8 @@ public abstract class BaseAppLoadingActivity extends BaseAppActivity implements 
     private void initStateSwitcher() {
         stateSwitcher = ViewStateSwitcher.createStandardSwitcher(this, findViewById(getMainContainerId()));
         tvErrorMessage = ViewStateSwitcher.addStandardErrorView(stateSwitcher,
-                // TODO: 20.03.2016 change this button name and default message
-                "No internet", "Retry",
+                getString(R.string.data_loading_error_message),
+                getString(R.string.data_loading_retry),
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
