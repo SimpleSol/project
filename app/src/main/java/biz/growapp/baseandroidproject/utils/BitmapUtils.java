@@ -55,22 +55,31 @@ public final class BitmapUtils {
         return Bitmap.createScaledBitmap(realImage, width, height, filter);
     }
 
-    public static File compressImage(Context context, File file, float imageMaxSize, String newFileName, @IntRange(from = 1, to = 100) int quality) {
-        FileInputStream inputStream = null;
-        Bitmap scaled = null;
-        try {
-            inputStream = new FileInputStream(file);
-            scaled = scaleDown(BitmapFactory.decodeStream(inputStream), imageMaxSize, true);
-        } catch (FileNotFoundException e) {
-            Log.e(TAG, "Error while scale image for file: " + file.getAbsolutePath());
-            return file;
-        } finally {
-            try {
-                if (inputStream != null) {
-                    inputStream.close();
-                }
-            } catch (IOException ignored) {
-            }
+    public static boolean isCorruptedImageFile(File file) {
+        if (file == null) {
+            return true;
+        }
+        String filePath = file.getAbsolutePath();
+        // First decode with inJustDecodeBounds=true to check dimensions
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+
+        BitmapFactory.decodeFile(filePath, options);
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, 1, 1);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeFile(filePath, options) == null;
+    }
+
+    @Nullable
+    public static File compressImage(Context context, File file, int imageMaxSize,
+                                     String newFileName, @IntRange(from = 1, to = 100) int quality) {
+        Bitmap scaled = decodeSampledBitmapFromFile(file.getAbsolutePath(), imageMaxSize, imageMaxSize);
+        if (scaled == null) {
+            return null;
         }
         //write new image to temp file
         final File output = new File(context.getExternalCacheDir(), newFileName);
@@ -206,7 +215,7 @@ public final class BitmapUtils {
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
-           // Bitmap newBitmap = BitmapFactory.decodeFile(path, options);
+            // Bitmap newBitmap = BitmapFactory.decodeFile(path, options);
             Bitmap rotatedBitmap = Bitmap.createBitmap(newBitmap, 0, 0, newBitmap.getWidth(),
                     newBitmap.getHeight(), matrix, true);
             return createFileFromBitmap(context, rotatedBitmap);

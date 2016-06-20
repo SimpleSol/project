@@ -2,7 +2,6 @@ package biz.growapp.baseandroidproject.helpers;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -13,6 +12,7 @@ import android.util.Log;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
@@ -21,7 +21,6 @@ import java.util.Date;
 import java.util.Locale;
 
 import biz.growapp.baseandroidproject.R;
-import biz.growapp.baseandroidproject.utils.BitmapUtils;
 
 public class PhotoPicker {
     private static final ThreadLocal<SimpleDateFormat> DATE_FORMATTER = new ThreadLocal<SimpleDateFormat>() {
@@ -165,6 +164,8 @@ public class PhotoPicker {
     }
 
     static class SaveFileTask extends AsyncTask<Uri, Void, File> {
+        private static final String TAG = SaveFileTask.class.getSimpleName();
+
         private final WeakReference<OnPhotoPickerListener> listener;
         private final WeakReference<Activity> activity;
         private File destination;
@@ -183,8 +184,31 @@ public class PhotoPicker {
             } catch (FileNotFoundException e) {
                 return null;
             }
-            BitmapUtils.createFileFromBitmap(BitmapFactory.decodeStream(inputStream), destination);
+            writeInputStreamToFile(inputStream, destination);
             return destination;
+        }
+
+        private void writeInputStreamToFile(InputStream inputStream, File destination) {
+            FileOutputStream fo = null;
+            try {
+                fo = new FileOutputStream(destination);
+                byte[] buffer = new byte[1024];
+                int read;
+                while ((read = inputStream.read(buffer)) != -1) {
+                    fo.write(buffer, 0, read);
+                }
+            } catch (FileNotFoundException fileNotFoundE) {
+                Log.e(TAG, "Error: Destination file not found", fileNotFoundE);
+            } catch (IOException ioE) {
+                Log.e(TAG, "Error: IOException", ioE);
+            } finally {
+                try {
+                    if (fo != null) {
+                        fo.close();
+                    }
+                } catch (IOException ignored) {
+                }
+            }
         }
 
         @Override
