@@ -2,7 +2,6 @@ package biz.growapp.baseandroidproject.helpers;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -21,7 +20,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import biz.growapp.baseandroidproject.R;
-import biz.growapp.baseandroidproject.utils.BitmapUtils;
+import biz.growapp.baseandroidproject.utils.FileUtils;
 
 public class PhotoPicker {
     private static final ThreadLocal<SimpleDateFormat> DATE_FORMATTER = new ThreadLocal<SimpleDateFormat>() {
@@ -165,6 +164,8 @@ public class PhotoPicker {
     }
 
     static class SaveFileTask extends AsyncTask<Uri, Void, File> {
+        private static final String TAG = SaveFileTask.class.getSimpleName();
+
         private final WeakReference<OnPhotoPickerListener> listener;
         private final WeakReference<Activity> activity;
         private File destination;
@@ -183,7 +184,7 @@ public class PhotoPicker {
             } catch (FileNotFoundException e) {
                 return null;
             }
-            BitmapUtils.createFileFromBitmap(BitmapFactory.decodeStream(inputStream), destination);
+            FileUtils.writeInputStreamToFile(inputStream, destination);
             return destination;
         }
 
