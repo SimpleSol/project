@@ -10,8 +10,10 @@ import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
@@ -178,14 +180,27 @@ public class PhotoPicker {
 
         @Override
         protected File doInBackground(Uri... params) {
-            final InputStream inputStream;
+            FileOutputStream out = null;
             try {
-                inputStream = activity.get().getContentResolver().openInputStream(params[0]);
+                InputStream inputStream = activity.get().getContentResolver().openInputStream(params[0]);
+                out = new FileOutputStream(destination);
+                if (inputStream != null && FileUtils.copyStream(inputStream,
+                        new BufferedOutputStream(out))) {
+                    return destination;
+                } else {
+                    return null;
+                }
             } catch (FileNotFoundException e) {
+                Log.e(TAG, "File not found while coping stream", e);
                 return null;
+            } finally {
+                if (out != null) {
+                    try {
+                        out.close();
+                    } catch (IOException ignored) {
+                    }
+                }
             }
-            FileUtils.writeInputStreamToFile(inputStream, destination);
-            return destination;
         }
 
         @Override
