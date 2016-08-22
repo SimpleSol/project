@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.TextView;
 
-import biz.growapp.baseandroidproject.R;
+import biz.growapp.R;
 import biz.growapp.base.BaseAppActivity;
 import biz.growapp.helpers.ViewStateSwitcher;
 

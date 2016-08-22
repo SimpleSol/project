@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
-import biz.growapp.baseandroidproject.R;
+import biz.growapp.R;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 

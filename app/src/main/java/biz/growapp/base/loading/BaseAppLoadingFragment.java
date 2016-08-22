@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.TextView;
 
-import biz.growapp.baseandroidproject.R;
+import biz.growapp.R;
 import biz.growapp.base.BaseAppFragment;
 import biz.growapp.helpers.ViewStateSwitcher;
 

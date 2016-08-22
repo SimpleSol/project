@@ -8,7 +8,7 @@ import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.util.concurrent.TimeUnit;
 
-import biz.growapp.baseandroidproject.BuildConfig;
+import biz.growapp.BuildConfig;
 import biz.growapp.network.cookie.PersistentCookieStore;
 import biz.growapp.network.response.base.ServerError;
 import okhttp3.Interceptor;

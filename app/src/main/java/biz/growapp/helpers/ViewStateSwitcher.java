@@ -19,8 +19,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.HashMap;
 import java.util.Map;
 
-import biz.growapp.baseandroidproject.BuildConfig;
-import biz.growapp.baseandroidproject.R;
+import biz.growapp.BuildConfig;
+import biz.growapp.R;
 
 public class ViewStateSwitcher {
 

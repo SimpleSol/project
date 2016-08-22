@@ -21,7 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import biz.growapp.baseandroidproject.R;
+import biz.growapp.R;
 import biz.growapp.utils.FileUtils;
 
 public class PhotoPicker {

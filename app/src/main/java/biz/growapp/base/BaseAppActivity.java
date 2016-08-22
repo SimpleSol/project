@@ -12,7 +12,7 @@ import android.view.MenuItem;
 import java.util.ArrayList;
 import java.util.List;
 
-import biz.growapp.baseandroidproject.R;
+import biz.growapp.R;
 import biz.growapp.helpers.ClickHelper;
 import butterknife.Bind;
 import butterknife.ButterKnife;
