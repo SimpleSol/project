@@ -13,8 +13,11 @@ import biz.growapp.base.BaseAdapter;
 
 
 public abstract class PaginationAdapter<ModelT, ViewHolderT extends RecyclerView.ViewHolder> extends BaseAdapter<ModelT, ViewHolderT> {
+
     public static final int TYPE_PROGRESS = -1;
     public static final int TYPE_ITEM = 0;
+
+    private boolean isLastPage;
 
     public interface Loader {
         void onLoadMore(int offset);
@@ -24,11 +27,11 @@ public abstract class PaginationAdapter<ModelT, ViewHolderT extends RecyclerView
     @NonNull
     private final LoadDetector loadDetector;
 
-    public PaginationAdapter(@NonNull Context context, @NonNull Loader loader, int pageSize) {
+    public PaginationAdapter(Context context, Loader loader, int pageSize) {
         this(context, loader, new LoadDownDetector(pageSize));
     }
 
-    public PaginationAdapter(@NonNull Context context, @NonNull Loader loader, @NonNull LoadDetector detector) {
+    public PaginationAdapter(Context context, Loader loader, @NonNull LoadDetector detector) {
         super(context);
         this.loader = new WeakReference<>(loader);
         this.loadDetector = detector;
@@ -74,6 +77,27 @@ public abstract class PaginationAdapter<ModelT, ViewHolderT extends RecyclerView
         }
     }
 
+    @Override
+    public void onBindViewHolder(ViewHolderT holder, int position, List<Object> payloads) {
+        if (holder.getItemViewType() != TYPE_PROGRESS) {
+            if (payloads.isEmpty()) {
+                _onBindViewHolder(holder, loadDetector.getCorrectItemPosition(position));
+            } else {
+                _onBindViewHolder(holder, loadDetector.getCorrectItemPosition(position), payloads);
+            }
+        }
+    }
+
+    /**
+     * Called only if payloads not empty
+     * @param holder
+     * @param position
+     * @param payloads
+     */
+    protected void _onBindViewHolder(ViewHolderT holder, final int position, final List<Object> payloads) {
+        _onBindViewHolder(holder, position);
+    }
+
     protected abstract void _onBindViewHolder(ViewHolderT holder, final int position);
 
     @Override
@@ -106,8 +130,19 @@ public abstract class PaginationAdapter<ModelT, ViewHolderT extends RecyclerView
 
     protected abstract int _getItemViewType(int position);
 
+    public boolean isLastPage() {
+        return isLastPage;
+    }
+
     public void stopLoading(List<ModelT> loadedItems) {
         stopLoading(loadedItems, getItemCount());
+        isLastPage = loadedItems.isEmpty();
+    }
+
+    @Override
+    public void clear() {
+        super.clear();
+        isLastPage = false;
     }
 
     public void stopLoading(List<ModelT> loadedItems, int startPosition) {
