@@ -8,7 +8,7 @@ import android.view.View;
 import biz.growapp.helpers.ClickHelper;
 import butterknife.ButterKnife;
 
-public abstract class BaseAppFragment extends Fragment implements OnBackPressedListener{
+public abstract class BaseAppFragment extends Fragment implements OnBackPressedListener {
     protected final ClickHelper clickHelper = new ClickHelper();
 
     @Override
@@ -20,7 +20,6 @@ public abstract class BaseAppFragment extends Fragment implements OnBackPressedL
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
     }
 
 

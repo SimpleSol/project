@@ -14,7 +14,7 @@ import java.util.List;
 
 import biz.growapp.R;
 import biz.growapp.helpers.ClickHelper;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public abstract class BaseAppActivity extends AppCompatActivity {
@@ -22,7 +22,7 @@ public abstract class BaseAppActivity extends AppCompatActivity {
     protected final ClickHelper clickHelper = new ClickHelper();
 
     @Nullable
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     protected Toolbar toolbar;
     private boolean isCommitAllowed;
 

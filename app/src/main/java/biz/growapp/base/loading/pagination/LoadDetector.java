@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import biz.growapp.R;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public abstract class LoadDetector {
@@ -120,7 +120,7 @@ public abstract class LoadDetector {
      * Default progress view holder
      */
     public static class ProgressViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.progressBar)
+        @BindView(R.id.progressBar)
         ProgressBar progressBar;
 
         public ProgressViewHolder(View itemView) {

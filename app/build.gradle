@@ -57,12 +57,34 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
 
-    //compile all libraries defined in buildsystem/dependencies.gradle file
-    def libraries = rootProject.ext.libraries
+    compile rootProject.ext.kotlin.stdlib
 
-    for (def group : libraries.values()) {
-        for (def lib : group.values()) {
-            compile lib
-        }
-    }
+    Map<String, String> network = rootProject.ext.network
+    compile(
+            network.retrofit,
+            network.converterGson,
+            network.okhttp,
+            network.okhttpLogging,
+//            network.cookieJar
+    )
+
+    Map<String, String> android = rootProject.ext.android
+    compile(
+            android.design,
+            android.support_all,
+            android.appcompat,
+            android.recyclerView,
+//            android.cardView,
+    )
+
+    Map<String, String> fresco = rootProject.ext.fresco
+    compile(
+            fresco.fresco
+    )
+
+    Map<String, String> helpers = rootProject.ext.helpers
+    compile(
+            helpers.butterknife,
+            helpers.threetenabp,
+    )
 }

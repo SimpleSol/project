@@ -1,39 +1,84 @@
 ext {
 
     versions = [
-            androidSupport: '23.2.1',
-            fresco        : '0.9.0',
-            butterknife   : '7.0.1',
-            retrofit      : '2.0.1',
-            okhttp        : '3.2.0',
-            jodatime      : '2.9.3',
+            kotlin        : '1.0.3',
+            anko          : '0.8.3',
+            androidSupport: '24.2.0',
+            playServices  : '9.2.0',
+            firebase      : '9.2.0',
+            fresco        : '0.12.0',
+            butterknife   : '8.0.1',
+            retrofit      : '2.1.0',
+            okhttp        : '3.3.0',
+            threetenabp   : '1.0.3',
+            VK            : '1.6.5',
+            facebook      : '4.14.0'
     ]
 
-    libraries = [
-            android: [
-                    design      : "com.android.support:design:${versions.androidSupport}",
-                    support     : "com.android.support:support-v4:${versions.androidSupport}",
-                    appcompat   : "com.android.support:appcompat-v7:${versions.androidSupport}",
-                    recyclerview: "com.android.support:recyclerview-v7:${versions.androidSupport}",
-                    cardview    : "com.android.support:cardview-v7:${versions.androidSupport}",
-            ],
+    kotlin = [
+            plugin : "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}",
+            stdlib : "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}",
+            runtime: "org.jetbrains.kotlin:kotlin-runtime:${versions.kotlin}"
+    ]
 
-            fresco : [
-                    fresco       : "com.facebook.fresco:fresco:${versions.fresco}",
-                    imagepipeline: "com.facebook.fresco:imagepipeline-okhttp:${versions.fresco}",
-            ],
+    anko = [
+            sdk15       : "org.jetbrains.anko:anko-sdk15:${versions.anko}",
+            support     : "org.jetbrains.anko:anko-support-v4:${versions.anko}",
+            appcompat   : "org.jetbrains.anko:anko-appcompat-v7:${versions.anko}",
+            recyclerView: "org.jetbrains.anko:anko-recyclerview-v7:${versions.anko}",
+            cardView    : "org.jetbrains.anko:anko-cardview-v7:${versions.anko}",
+            design      : "org.jetbrains.anko:anko-design:${versions.anko}",
+    ]
 
-            network: [
-                    retrofit     : "com.squareup.retrofit2:retrofit:${versions.retrofit}",
-                    converterGson: "com.squareup.retrofit2:converter-gson:${versions.retrofit}",
-                    okhttp       : "com.squareup.okhttp3:okhttp:${versions.okhttp}",
-                    okhttpLogging: "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}",
-                    urlconnection: "com.squareup.okhttp3:okhttp-urlconnection:${versions.okhttp}",
-            ],
+    android = [
+            design           : "com.android.support:design:${versions.androidSupport}",
+            support_all      : "com.android.support:support-v4:${versions.androidSupport}",
+            support_compat   : "com.android.support:support-compat:${versions.androidSupport}",
+            support_utils    : "com.android.support:support-core-utils:${versions.androidSupport}",
+            support_ui       : "com.android.support:support-core-ui:${versions.androidSupport}",
+            support_media    : "com.android.support:support-media-compat:${versions.androidSupport}",
+            support_fragments: "com.android.support:support-fragment:${versions.androidSupport}",
+            appcompat        : "com.android.support:appcompat-v7:${versions.androidSupport}",
+            recyclerView     : "com.android.support:recyclerview-v7:${versions.androidSupport}",
+            cardView         : "com.android.support:cardview-v7:${versions.androidSupport}",
+    ]
 
-            helpers: [
-                    butterknife: "com.jakewharton:butterknife:${versions.butterknife}",
-                    jodatime   : "net.danlew:android.joda:${versions.jodatime}",
+    fresco = [
+            fresco       : "com.facebook.fresco:fresco:${versions.fresco}",
+            imagepipeline: "com.facebook.fresco:imagepipeline-okhttp:${versions.fresco}",
+    ]
+
+    network = [
+            retrofit     : "com.squareup.retrofit2:retrofit:${versions.retrofit}",
+            converterGson: "com.squareup.retrofit2:converter-gson:${versions.retrofit}",
+            okhttp       : "com.squareup.okhttp3:okhttp:${versions.okhttp}",
+            okhttpLogging: "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}",
+            cookieJar    : "com.github.franmontiel:PersistentCookieJar:v0.9.3",
+    ]
+
+    helpers = [
+            butterknife: "com.jakewharton:butterknife:${versions.butterknife}",
+            threetenabp: "com.jakewharton.threetenabp:threetenabp:${versions.threetenabp}",
+    ]
+
+    google = [
+            analytics: "com.google.android.gms:play-services-analytics:${versions.playServices}",
+            maps     : "com.google.android.gms:play-services-maps:${versions.playServices}",
+            fcm      : "com.google.firebase:firebase-messaging:${versions.firebase}",
+    ]
+
+    social = [
+            vkSdk   : "com.vk:androidsdk:${versions.VK}",
+            facebook: [
+                    sdk     : "com.facebook.android:facebook-android-sdk:${versions.facebook}",
+                    excluded: [
+                            modules: [
+                                    'bolts-android',
+                                    'bolts-tasks',
+                                    'bolts-applinks',
+                                    'support-v4',
+                            ]
+                    ]
             ]
     ]
 }

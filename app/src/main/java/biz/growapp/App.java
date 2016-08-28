@@ -4,11 +4,10 @@ package biz.growapp;
 import android.app.Application;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.jakewharton.threetenabp.AndroidThreeTen;
 
-import net.danlew.android.joda.JodaTimeAndroid;
-
-import biz.growapp.network.RequestManager;
 import biz.growapp.helpers.Prefs;
+import biz.growapp.network.RequestManager;
 
 public class App extends Application {
     private static App instance;
@@ -21,7 +20,7 @@ public class App extends Application {
         Prefs.init(this);
         RequestManager.init(this);
 
-        JodaTimeAndroid.init(this);
+        AndroidThreeTen.init(this);
         Fresco.initialize(this);
     }
 

@@ -4,15 +4,11 @@ import android.content.Context;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.net.CookieManager;
-import java.net.CookiePolicy;
 import java.util.concurrent.TimeUnit;
 
 import biz.growapp.BuildConfig;
-import biz.growapp.network.cookie.PersistentCookieStore;
 import biz.growapp.network.response.base.ServerError;
 import okhttp3.Interceptor;
-import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -22,6 +18,8 @@ import retrofit2.Converter;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+//import okhttp3.JavaNetCookieJar;
+
 public class RequestManager {
     private static Retrofit retrofit;
     private static Converter<ResponseBody, ServerError> errorConverter;
@@ -30,13 +28,14 @@ public class RequestManager {
         final OkHttpClient.Builder builder = new OkHttpClient().newBuilder();
 
         builder.connectTimeout(NetworkConst.CONNECTION_TIMEOUT, TimeUnit.SECONDS)
-                .readTimeout(NetworkConst.READ_TIMEOUT, TimeUnit.SECONDS)
-                .cookieJar(new JavaNetCookieJar(
-                                new CookieManager(
-                                        new PersistentCookieStore(context.getApplicationContext()),
-                                        CookiePolicy.ACCEPT_ALL)
-                        )
-                );
+                .readTimeout(NetworkConst.READ_TIMEOUT, TimeUnit.SECONDS);
+        // TODO: DO 29.08.2016 fix cookies
+//                .cookieJar(new JavaNetCookieJar(
+//                                new CookieManager(
+//                                        new PersistentCookieStore(context.getApplicationContext()),
+//                                        CookiePolicy.ACCEPT_ALL)
+//                        )
+//                );
         builder.addInterceptor(new Interceptor() {
             @Override
             public Response intercept(Chain chain) throws IOException {
