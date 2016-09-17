@@ -3,7 +3,7 @@ package biz.growapp.helpers;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
-import android.widget.SearchView;
+import android.support.v7.widget.SearchView;
 
 import java.lang.ref.WeakReference;
 
@@ -12,14 +12,14 @@ public class BaseSearchListener implements SearchView.OnQueryTextListener{
     private static final int SEARCH_CHANGED_CODE = 100;
 
     public interface SearchEventListener {
-        void doSearch(String query);
+        void doSearch(String query, boolean isSubmit);
     }
 
     private final Handler handler;
     private final WeakReference<SearchEventListener> listener;
     private final long delayMs;
 
-    public BaseSearchListener(@NonNull  SearchEventListener listener) {
+    public BaseSearchListener(@NonNull SearchEventListener listener) {
         this(listener, DEFAULT_DELAY_MS);
     }
 
@@ -34,7 +34,7 @@ public class BaseSearchListener implements SearchView.OnQueryTextListener{
         handler.removeMessages(SEARCH_CHANGED_CODE);
         final SearchEventListener eventListener = listener.get();
         if (eventListener != null) {
-            eventListener.doSearch(query);
+            eventListener.doSearch(query, true);
         }
         return true;
     }
@@ -57,7 +57,7 @@ public class BaseSearchListener implements SearchView.OnQueryTextListener{
         public void handleMessage(Message msg) {
             final SearchEventListener eventListener = listener.get();
             if (eventListener != null) {
-                eventListener.doSearch((String) msg.obj);
+                eventListener.doSearch((String) msg.obj, false);
             }
         }
     }
