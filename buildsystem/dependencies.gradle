@@ -6,7 +6,7 @@ ext {
             androidSupport: '24.2.0',
             playServices  : '9.2.0',
             firebase      : '9.2.0',
-            fresco        : '0.12.0',
+            fresco        : '0.13.0',
             butterknife   : '8.0.1',
             retrofit      : '2.1.0',
             okhttp        : '3.3.0',
@@ -45,7 +45,7 @@ ext {
 
     fresco = [
             fresco       : "com.facebook.fresco:fresco:${versions.fresco}",
-            imagepipeline: "com.facebook.fresco:imagepipeline-okhttp:${versions.fresco}",
+            imagepipeline: "com.facebook.fresco:imagepipeline-okhttp3:${versions.fresco}",
     ]
 
     network = [
