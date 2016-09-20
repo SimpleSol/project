@@ -1,11 +1,18 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     dexOptions {
-        javaMaxHeapSize "4g"
+        javaMaxHeapSize "2g"
     }
 
     def BOOLEAN = "boolean"
@@ -63,7 +70,6 @@ dependencies {
     compile(
             network.retrofit,
             network.converterGson,
-            network.okhttp,
             network.okhttpLogging,
 //            network.cookieJar
     )
@@ -77,6 +83,12 @@ dependencies {
 //            android.cardView,
     )
 
+    Map<String, String> rx = rootProject.ext.rx
+    compile(
+            rx.java,
+            rx.android,
+    )
+
     Map<String, String> fresco = rootProject.ext.fresco
     compile(
             fresco.fresco
@@ -87,4 +99,5 @@ dependencies {
             helpers.butterknife,
             helpers.threetenabp,
     )
+    apt helpers.butterknife_compiler
 }
