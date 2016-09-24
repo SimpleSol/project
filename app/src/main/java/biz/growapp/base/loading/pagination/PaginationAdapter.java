@@ -2,141 +2,98 @@ package biz.growapp.base.loading.pagination;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringDef;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
-import java.lang.ref.WeakReference;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.List;
 
-import biz.growapp.base.BaseAdapter;
+import biz.growapp.R;
+import biz.growapp.base.AdapterDelegate;
+import biz.growapp.base.DelegationAdapter;
 
+public class PaginationAdapter<T> extends DelegationAdapter<T> {
 
-public abstract class PaginationAdapter<ModelT, ViewHolderT extends RecyclerView.ViewHolder> extends BaseAdapter<ModelT, ViewHolderT> {
-
-    public static final int TYPE_PROGRESS = -1;
-    public static final int TYPE_ITEM = 0;
-
-    private boolean isLastPage;
+    @Retention(RetentionPolicy.SOURCE)
+    @StringDef({Direction.TO_END, Direction.TO_START})
+    public @interface Direction {
+        String TO_START = "start";
+        String TO_END = "end";
+    }
 
     public interface Loader {
         void onLoadMore(int offset);
     }
 
-    private final WeakReference<Loader> loader;
-    @NonNull
+    private final Loader loader;
     private final LoadDetector loadDetector;
+    private ProgressBarAdapter<T> progressBarAdapter;
+    private boolean isLastPage;
 
-    public PaginationAdapter(Context context, Loader loader, int pageSize) {
-        this(context, loader, new LoadDownDetector(pageSize));
+    public PaginationAdapter(Loader loader) {
+        this(loader, Direction.TO_END);
     }
 
-    public PaginationAdapter(Context context, Loader loader, @NonNull LoadDetector detector) {
-        super(context);
-        this.loader = new WeakReference<>(loader);
-        this.loadDetector = detector;
-        setHasStableIds(true);
+    public PaginationAdapter(Loader loader, @NonNull @Direction String direction) {
+        this(loader, direction, LoadDetector.DEFAULT_ITEM_THRESHOLD);
+    }
+
+    public PaginationAdapter(Loader loader, @NonNull @Direction String direction, int itemThreshold) {
+        super();
+        this.loader = loader;
+        if (direction.equals(Direction.TO_END)) {
+            this.loadDetector = new LoadFromEndDetector(itemThreshold);
+        } else {
+            this.loadDetector = new LoadFromStartDetector(itemThreshold);
+        }
     }
 
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
-        loadDetector.onAttachedToRecyclerView(recyclerView);
-    }
-
-    void loadItems(int itemsCount) {
-        loadDetector.setLoadingState(true);
-        final Loader loader = this.loader.get();
-        if (loader != null) {
-            loader.onLoadMore(itemsCount);
-        }
+        progressBarAdapter = new ProgressBarAdapter<>(recyclerView.getContext());
+        getManager().addDelegate(progressBarAdapter);
+        loadDetector.onAttachedToRecyclerView(recyclerView, this);
     }
 
     @Override
     public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
         loadDetector.onDetachedFromRecyclerView(recyclerView);
+        getManager().removeDelegate(progressBarAdapter);
+        progressBarAdapter = null;
         super.onDetachedFromRecyclerView(recyclerView);
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public ViewHolderT onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (viewType == TYPE_PROGRESS) {
-            return (ViewHolderT) loadDetector.createProgressViewHolder(inflater, parent);
-        } else {
-            return _onCreateViewHolder(parent, viewType);
-        }
-    }
-
-    protected abstract ViewHolderT _onCreateViewHolder(ViewGroup parent, int viewType);
-
-    @Override
-    public void onBindViewHolder(ViewHolderT holder, final int position) {
-        if (holder.getItemViewType() != TYPE_PROGRESS) {
-            _onBindViewHolder(holder, loadDetector.getCorrectItemPosition(position));
+    void loadItems(int itemsCount) {
+        if (loader != null && !isLastPage) {
+            loadDetector.setLoadingState(true);
+            loader.onLoadMore(itemsCount);
         }
     }
 
     @Override
-    public void onBindViewHolder(ViewHolderT holder, int position, List<Object> payloads) {
-        if (holder.getItemViewType() != TYPE_PROGRESS) {
-            if (payloads.isEmpty()) {
-                _onBindViewHolder(holder, loadDetector.getCorrectItemPosition(position));
-            } else {
-                _onBindViewHolder(holder, loadDetector.getCorrectItemPosition(position), payloads);
+    public void addAll(List<T> items, int startPosition) {
+        final boolean fromLoader = loadDetector.isLoading() || getItemCount() == 0;
+        if (fromLoader) {
+            isLastPage = items.isEmpty();
+            if (getItemCount() != 0) {
+                loadDetector.setLoadingState(false);
+                // TODO: DO 22.09.2016 fix this and loadUP
+                startPosition--;
+                if (startPosition < 0) {
+                    startPosition = 0;
+                }
             }
         }
-    }
-
-    /**
-     * Called only if payloads not empty
-     * @param holder
-     * @param position
-     * @param payloads
-     */
-    protected void _onBindViewHolder(ViewHolderT holder, final int position, final List<Object> payloads) {
-        _onBindViewHolder(holder, position);
-    }
-
-    protected abstract void _onBindViewHolder(ViewHolderT holder, final int position);
-
-    @Override
-    public int getItemCount() {
-        return loadDetector.isProgressItemVisible()
-                ? items.size() + 1
-                : items.size();
-    }
-
-    @Override
-    public long getItemId(int position) {
-        if (loadDetector.isProgressItemPosition(position)) {
-            return RecyclerView.NO_ID;
+        super.addAll(items, startPosition);
+        if (fromLoader && !isLastPage && loadDetector.isItemsNotFitScreen(items.size())) {
+            loadItems(getItemCount());
         }
-        return _getItemId(loadDetector.getCorrectItemPosition(position));
-    }
-
-    protected abstract long _getItemId(int position);
-
-    @Override
-    public int getItemViewType(int position) {
-        if (position == RecyclerView.NO_POSITION) {
-            Log.d("PaginationAdapter", "position == -1");
-            return TYPE_PROGRESS;
-        }
-        return loadDetector.isProgressItemPosition(position)
-                ? TYPE_PROGRESS
-                : _getItemViewType(loadDetector.getCorrectItemPosition(position));
-    }
-
-    protected abstract int _getItemViewType(int position);
-
-    public boolean isLastPage() {
-        return isLastPage;
-    }
-
-    public void stopLoading(List<ModelT> loadedItems) {
-        stopLoading(loadedItems, getItemCount());
-        isLastPage = loadedItems.isEmpty();
     }
 
     @Override
@@ -145,18 +102,38 @@ public abstract class PaginationAdapter<ModelT, ViewHolderT extends RecyclerView
         isLastPage = false;
     }
 
-    public void stopLoading(List<ModelT> loadedItems, int startPosition) {
-        if (loadDetector.isProgressItemVisible()) { // TODO: 09.03.16 we really need this check?
-            startPosition--;
-            if (startPosition < 0) {
-                startPosition = 0;
+    static class ProgressBarAdapter<T> implements AdapterDelegate<T> {
+        private final LayoutInflater inflater;
+
+        static class Progress {
+        }
+
+        ProgressBarAdapter(Context context) {
+            inflater = LayoutInflater.from(context);
+        }
+
+        @Override
+        public boolean isForViewType(@NonNull List<T> items, int position) {
+            return items.get(position) instanceof Progress;
+        }
+
+        @NonNull
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent) {
+            return new ProgressViewHolder(inflater.inflate(R.layout.loading_footer, parent, false));
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, @NonNull List<T> items, int position) {
+        }
+
+        static class ProgressViewHolder extends RecyclerView.ViewHolder {
+            ProgressBar progressBar;
+
+            ProgressViewHolder(View itemView) {
+                super(itemView);
+                progressBar = (ProgressBar) itemView;
             }
         }
-        loadDetector.setLoadingState(false);
-        addAll(loadedItems, startPosition);
-        if (loadDetector.isItemsNotFitScreen(loadedItems.size())) {
-            loadItems(getItemCount());
-        }
     }
-
 }
