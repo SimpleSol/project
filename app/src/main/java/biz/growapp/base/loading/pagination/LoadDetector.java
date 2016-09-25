@@ -1,60 +1,32 @@
 package biz.growapp.base.loading.pagination;
 
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
-import biz.growapp.R;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+abstract class LoadDetector {
+    static final int DEFAULT_ITEM_THRESHOLD = 5;
 
-public abstract class LoadDetector {
-    public static final int DEFAULT_ITEM_THRESHOLD = 5;
+    private volatile boolean isLoading;
+    private final int itemThreshold;
 
     protected RecyclerView.LayoutManager layoutManager;
     protected PaginationAdapter adapter;
-
-    // True if we are still waiting for the last set of data to load.
-    private volatile boolean isLoading;
-    // The minimum amount of items to have below your current scroll position before isLoading more.
-    private final int itemThreshold;
-    private final int pageSize;
-
     private RecyclerView.OnScrollListener scrollListener;
-    private volatile boolean isProgressItemVisible;
+    protected final PaginationAdapter.ProgressBarAdapter.Progress progressItem
+            = new PaginationAdapter.ProgressBarAdapter.Progress();
 
-    protected LoadDetector(int pageSize) {
-        this(DEFAULT_ITEM_THRESHOLD, pageSize);
-    }
-
-    protected LoadDetector(int itemThreshold, int pageSize) {
+    LoadDetector(int itemThreshold) {
         this.itemThreshold = itemThreshold;
-        this.pageSize = pageSize;
     }
 
-    /**
-     * Need to call from {@link PaginationAdapter#onAttachedToRecyclerView(android.support.v7.widget.RecyclerView)}
-     *
-     * @param recyclerView recyclerView
-     */
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+    void onAttachedToRecyclerView(RecyclerView recyclerView, PaginationAdapter paginationAdapter) {
         this.layoutManager = recyclerView.getLayoutManager();
         // TODO: 09.03.16 maybe create LoadManager - and pass into Loader and LoadDetector
-        final RecyclerView.Adapter adapter = recyclerView.getAdapter();
-        if (!(adapter instanceof PaginationAdapter)) {
-            throw new RuntimeException("Adapter must extend PaginationAdapter");
-        }
-        this.adapter = (PaginationAdapter) adapter;
+        this.adapter = paginationAdapter;
         scrollListener = getScrollListener();
         recyclerView.addOnScrollListener(scrollListener);
     }
 
-    /**
-     * Need to cal from {@link PaginationAdapter#onDetachedFromRecyclerView(android.support.v7.widget.RecyclerView)}
-     */
-    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
+    void onDetachedFromRecyclerView(RecyclerView recyclerView) {
         recyclerView.removeOnScrollListener(scrollListener);
         this.scrollListener = null;
         this.layoutManager = null;
@@ -65,46 +37,18 @@ public abstract class LoadDetector {
 
     public abstract RecyclerView.OnScrollListener getScrollListener();
 
-    public final void setLoadingState(boolean isLoading) {
+    final void setLoadingState(boolean isLoading) {
         this.isLoading = isLoading;
-        if (isProgressItemVisible != isLoading) {
-            enableProgressItem(isLoading);
-            this.isProgressItemVisible = isLoading;
-        }
+        enableProgressItem(isLoading);
     }
 
-    /**
-     * Get current loading state
-     *
-     * @return <tt>true</tt>, if we are still waiting for the last set of data to load, <tt>false</tt> - otherwise
-     */
-    public final boolean getLoadingState() {
+    public final boolean isLoading() {
         return isLoading;
     }
 
-    public final boolean isProgressItemVisible() {
-        return isProgressItemVisible;
-    }
-
-    public final int getPageSize() {
-        return pageSize;
-    }
-
-    public int getItemThreshold() {
+    int getItemThreshold() {
         return itemThreshold;
     }
-
-    public RecyclerView.ViewHolder createProgressViewHolder(LayoutInflater inflater, ViewGroup parent) {
-        return new ProgressViewHolder(inflater.inflate(R.layout.loading_footer, parent, false));
-    }
-
-    /**
-     * Check position for equals progress item position
-     *
-     * @param position item position
-     * @return <tt>true</tt>, if progressItem position equals passed position and <tt>false</tt> - otherwise
-     */
-    public abstract boolean isProgressItemPosition(int position);
 
     /**
      * Check if items fit screen
@@ -112,20 +56,9 @@ public abstract class LoadDetector {
      * @param loadedItemsCount loaded items count
      * @return <tt>true</tt>, if items don't fit screen and need downloading, <tt>false</tt> - otherwise
      */
-    public abstract boolean isItemsNotFitScreen(int loadedItemsCount);
-
-    public abstract int getCorrectItemPosition(int position);
-
-    /**
-     * Default progress view holder
-     */
-    public static class ProgressViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.progressBar)
-        ProgressBar progressBar;
-
-        public ProgressViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
+    boolean isItemsNotFitScreen(int loadedItemsCount) {
+        final int childCount = layoutManager.getChildCount();
+        return childCount == 0 || adapter.getItemCount() - loadedItemsCount <= childCount;
     }
+
 }

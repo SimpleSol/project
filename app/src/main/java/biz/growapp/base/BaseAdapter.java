@@ -1,29 +1,27 @@
 package biz.growapp.base;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class BaseAdapter<ModelT, ViewHolderT extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<ViewHolderT> {
-    protected final LayoutInflater inflater;
-    protected final List<ModelT> items;
-    protected final WeakReference<Context> context;
-
-    public BaseAdapter(Context context) {
-        this.inflater = LayoutInflater.from(context);
-        this.context = new WeakReference<>(context);
-        this.items = new ArrayList<>();
-    }
+    protected final List<ModelT> items = new ArrayList<>();
 
     @Override
     public int getItemCount() {
         return items.size();
+    }
+
+    public boolean isEmpty() {
+        return items.isEmpty();
+    }
+
+    @NonNull
+    public List<ModelT> getItems() {
+        return items;
     }
 
     @Nullable
@@ -52,17 +50,6 @@ public abstract class BaseAdapter<ModelT, ViewHolderT extends RecyclerView.ViewH
         }
     }
 
-    @Nullable
-    public ModelT replace(@NonNull final ModelT item, int position) {
-        if (position > items.size()) {
-            position = items.size();
-        }
-        final ModelT oldItem = items.remove(position);
-        items.add(position, item);
-        notifyItemChanged(position);
-        return oldItem;
-    }
-
     public void addAll(final List<ModelT> items) {
         addAll(items, this.items.size());
     }
@@ -83,19 +70,26 @@ public abstract class BaseAdapter<ModelT, ViewHolderT extends RecyclerView.ViewH
         }
     }
 
+    @Nullable
+    public ModelT replace(@NonNull final ModelT item, int position) {
+        if (position > items.size()) {
+            position = items.size();
+        }
+        final ModelT oldItem = items.remove(position);
+        items.add(position, item);
+        notifyItemChanged(position);
+        return oldItem;
+    }
+
+    public void replaceAll(final List<ModelT> items) {
+        clear();
+        addAll(items);
+    }
+
     public void clear() {
         final int size = items.size();
         items.clear();
         notifyItemRangeRemoved(0, size);
-    }
-
-    public boolean isEmpty() {
-        return items.isEmpty();
-    }
-
-    @NonNull
-    public List<ModelT> getItems() {
-        return items;
     }
 
     @Nullable
