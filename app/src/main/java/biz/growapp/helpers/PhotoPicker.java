@@ -5,12 +5,12 @@ import android.content.Intent;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -22,28 +22,37 @@ import java.util.Date;
 import java.util.Locale;
 
 import biz.growapp.R;
-import biz.growapp.utils.FileUtils;
 
 public class PhotoPicker {
+
+    public static final String FILE_EXTENSION = ".jpg";
+    static final int REQUEST_IMAGE_CAPTURE = 254;
+    static final int REQUEST_PICK_GALLERY = 255;
     private static final ThreadLocal<SimpleDateFormat> DATE_FORMATTER = new ThreadLocal<SimpleDateFormat>() {
         @Override
         protected SimpleDateFormat initialValue() {
             return new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
         }
     };
-
-    static final int REQUEST_IMAGE_CAPTURE = 254;
-    static final int REQUEST_PICK_GALLERY = 255;
-    public static final String FILE_EXTENSION = ".jpg";
+    private static final String CURRENT_PHOTO_PATH = "current_photo_path";
 
     private final WeakReference<Activity> activity;
     private final WeakReference<OnPhotoPickerListener> listener;
-    private Fragment fragment;
     String mCurrentPhotoPath;
+    private Fragment fragment;
 
-    public PhotoPicker(Activity activity, OnPhotoPickerListener listener) {
+    public PhotoPicker(Activity activity, OnPhotoPickerListener listener, Bundle savedState) {
         this.activity = new WeakReference<>(activity);
         this.listener = new WeakReference<>(listener);
+        if (savedState != null) {
+            mCurrentPhotoPath = savedState.getString(CURRENT_PHOTO_PATH);
+        }
+    }
+
+    public Bundle saveState() {
+        final Bundle bundle = new Bundle();
+        bundle.putString(CURRENT_PHOTO_PATH, mCurrentPhotoPath);
+        return bundle;
     }
 
     /**
@@ -166,8 +175,7 @@ public class PhotoPicker {
     }
 
     static class SaveFileTask extends AsyncTask<Uri, Void, File> {
-        private static final String TAG = SaveFileTask.class.getSimpleName();
-
+        private static final String TAG = SaveFileTask.class.getSimpleName() + "_debug";
         private final WeakReference<OnPhotoPickerListener> listener;
         private final WeakReference<Activity> activity;
         private File destination;
@@ -180,27 +188,34 @@ public class PhotoPicker {
 
         @Override
         protected File doInBackground(Uri... params) {
-            FileOutputStream out = null;
+            final InputStream inputStream;
             try {
-                InputStream inputStream = activity.get().getContentResolver().openInputStream(params[0]);
-                out = new FileOutputStream(destination);
-                if (inputStream != null && FileUtils.copyStream(inputStream,
-                        new BufferedOutputStream(out))) {
-                    return destination;
-                } else {
-                    return null;
-                }
+                inputStream = activity.get().getContentResolver().openInputStream(params[0]);
             } catch (FileNotFoundException e) {
-                Log.e(TAG, "File not found while coping stream", e);
                 return null;
+            }
+
+            FileOutputStream fo = null;
+            try {
+                fo = new FileOutputStream(destination);
+                byte[] buffer = new byte[1024];
+                int read;
+                while ((read = inputStream.read(buffer)) != -1) {
+                    fo.write(buffer, 0, read);
+                }
+            } catch (FileNotFoundException fileNotFoundE) {
+                Log.e(TAG, "Error: Destination file not found", fileNotFoundE);
+            } catch (IOException ioE) {
+                Log.e(TAG, "Error: IOException", ioE);
             } finally {
-                if (out != null) {
-                    try {
-                        out.close();
-                    } catch (IOException ignored) {
+                try {
+                    if (fo != null) {
+                        fo.close();
                     }
+                } catch (IOException ignored) {
                 }
             }
+            return destination;
         }
 
         @Override
