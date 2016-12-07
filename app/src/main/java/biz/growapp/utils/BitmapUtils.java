@@ -61,10 +61,7 @@ public final class BitmapUtils {
         }
         String filePath = file.getAbsolutePath();
         // First decode with inJustDecodeBounds=true to check dimensions
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-
-        BitmapFactory.decodeFile(filePath, options);
+        final BitmapFactory.Options options = decodeBitmapOptions(filePath);
 
         // Calculate inSampleSize
         options.inSampleSize = calculateInSampleSize(options, 1, 1);
@@ -101,6 +98,51 @@ public final class BitmapUtils {
         }
     }
 
+    public static Bitmap scaleImageExactly(File file, int maxSize) {
+        BitmapFactory.Options options = decodeBitmapOptions(file.getAbsolutePath());
+
+        int outWidth;
+        int outHeight;
+
+        int inWidth = options.outWidth;
+        int inHeight = options.outHeight;
+
+        if (inWidth > inHeight) {
+            outWidth = maxSize;
+            outHeight = (inHeight * maxSize) / inWidth;
+        } else {
+            outHeight = maxSize;
+            outWidth = (inWidth * maxSize) / inHeight;
+        }
+
+        options.inJustDecodeBounds = false;
+        options.inSampleSize = calculateInSampleSizeToExactly(options, outWidth, outHeight);
+
+        Bitmap bitmapToExactlyScale = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+        return Bitmap.createScaledBitmap(bitmapToExactlyScale, outWidth, outHeight, false);
+    }
+
+    private static BitmapFactory.Options decodeBitmapOptions(String path) {
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(path, options);
+        return options;
+    }
+
+    private static int calculateInSampleSizeToExactly(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        int height = options.outHeight;
+        int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+            int heightRatio = Math.round((float) height / (float) reqHeight);
+            int widthRatio = Math.round((float) width / (float) reqWidth);
+            inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
+        }
+
+        return inSampleSize;
+    }
+
     public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         // Raw height and width of image
         final int height = options.outHeight;
@@ -125,10 +167,7 @@ public final class BitmapUtils {
     public static Bitmap decodeSampledBitmapFromFile(String filePath, int reqWidth, int reqHeight) {
 
         // First decode with inJustDecodeBounds=true to check dimensions
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-
-        BitmapFactory.decodeFile(filePath, options);
+        final BitmapFactory.Options options = decodeBitmapOptions(filePath);
 
         // Calculate inSampleSize
         options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);

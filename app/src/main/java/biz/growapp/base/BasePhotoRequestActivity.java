@@ -25,7 +25,7 @@ public abstract class BasePhotoRequestActivity extends BaseAppLoadingActivity im
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        photoPicker = new PhotoPicker(this, this);
+        photoPicker = new PhotoPicker(this, this, savedInstanceState);
     }
 
     @Override
