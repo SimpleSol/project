@@ -1,16 +1,12 @@
-/*
- * BusinessApps
- *
- * Created by alex on 30.06.16
- * Copyright © 2016 alex. All rights reserved.
- */
-
 package biz.growapp.extensions
 
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.support.v4.app.Fragment
+
+val Context.launcherIntent: Intent
+    get() = packageManager.getLaunchIntentForPackage(packageName)
 
 inline fun Fragment.makeDial(number: String) = activity.makeDial(number)
 

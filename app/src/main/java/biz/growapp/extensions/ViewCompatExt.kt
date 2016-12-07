@@ -16,11 +16,13 @@ var View.elevationCompat: Float
     get() = ViewCompat.getElevation(this)
     set(value) = ViewCompat.setElevation(this, value)
 
-inline fun View.onGlobalLayout(crossinline action: () -> Unit) = with(viewTreeObserver) {
-    addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+inline fun View.onGlobalLayout(crossinline action: () -> Unit): ViewTreeObserver.OnGlobalLayoutListener {
+    val listener = object : ViewTreeObserver.OnGlobalLayoutListener {
         override fun onGlobalLayout() {
-            removeOnGlobalLayoutListener(this)
+            viewTreeObserver.removeOnGlobalLayoutListener(this)
             action()
         }
-    })
+    }
+    viewTreeObserver.addOnGlobalLayoutListener(listener)
+    return listener
 }
