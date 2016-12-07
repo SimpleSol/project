@@ -3,8 +3,8 @@ apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'me.tatarka.retrolambda'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+    compileSdkVersion 25
+    buildToolsVersion "25.0.1"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -22,7 +22,7 @@ android {
 
     defaultConfig {
         applicationId "biz.growapp.baseandroidproject"
-        minSdkVersion 15
+        minSdkVersion 16
         // IF targetSdkVersion == 23, be sure to support Android 6.0 runtime-permissions and Doze-mode
         targetSdkVersion 22
         versionCode 1
