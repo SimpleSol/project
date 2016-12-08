@@ -1,16 +1,26 @@
-/*
- * BusinessApps
- *
- * Created by Dmitry Ikryanov on 10.06.16
- * Copyright © 2016 Dmitry Ikryanov. All rights reserved.
- */
 @file:JvmName("ViewCompatUtils")
 
 package biz.growapp.extensions
 
+import android.support.annotation.LayoutRes
 import android.support.v4.view.ViewCompat
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewTreeObserver
+
+fun View.show() {
+    this.visibility = View.VISIBLE
+}
+
+fun View.hide() {
+    this.visibility = View.GONE
+}
+
+fun View.isVisible() = visibility == View.VISIBLE
+
+fun ViewGroup.inflate(@LayoutRes layoutRes: Int, attachToRoot: Boolean = false)
+        = LayoutInflater.from(context).inflate(layoutRes, this, attachToRoot)
 
 var View.elevationCompat: Float
     get() = ViewCompat.getElevation(this)

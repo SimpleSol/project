@@ -3,10 +3,17 @@ package biz.growapp.extensions
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.support.annotation.ColorRes
+import android.support.annotation.DrawableRes
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 
 val Context.launcherIntent: Intent
     get() = packageManager.getLaunchIntentForPackage(packageName)
+
+fun Context.getCompatColor(@ColorRes resId: Int) = ContextCompat.getColor(this, resId)
+
+fun Context.getCompatDrawable(@DrawableRes drawableId:Int) = ContextCompat.getDrawable(this, drawableId)
 
 inline fun Fragment.makeDial(number: String) = activity.makeDial(number)
 
